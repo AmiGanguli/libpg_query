@@ -24,6 +24,7 @@ add_library(libpgqueryparser SHARED
 	src/postgres/src_backend_parser_gram.c
 	src/postgres/src_backend_parser_parse_expr.c
 	src/postgres/src_backend_parser_parser.c
+	src/postgres/src_backend_parser_scan.c
 	src/postgres/src_backend_parser_scansup.c
 	src/postgres/src_backend_postmaster_postmaster.c
 	src/postgres/src_backend_storage_ipc_ipc.c
@@ -81,4 +82,28 @@ install(TARGETS libpgqueryparser
 configure_file(libpgqueryparser.pc.in libpgqueryparser.pc @ONLY)
 
 install(FILES ${CMAKE_BINARY_DIR}/libpgqueryparser.pc DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+
+find_package(Threads)
+
+add_executable(complex test/complex.c)
+target_include_directories(complex PRIVATE src)
+target_link_libraries(complex libpgqueryparser)
+
+add_executable(concurrency test/concurrency.c)
+target_link_libraries(concurrency libpgqueryparser ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(fingerprint test/fingerprint.c)
+target_include_directories(fingerprint PRIVATE src)
+target_link_libraries(fingerprint libpgqueryparser)
+
+add_executable(normalize test/normalize.c)
+target_link_libraries(normalize libpgqueryparser)
+
+add_executable(parse test/parse.c)
+target_link_libraries(parse libpgqueryparser)
+
+add_executable(parse_plpgsql test/parse_plpgsql.c)
+target_link_libraries(parse_plpgsql libpgqueryparser)
+
+
 
